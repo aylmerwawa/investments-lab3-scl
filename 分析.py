@@ -170,7 +170,7 @@ va.round(6).to_csv(OUT / "02-方差分析-月度.csv", encoding="utf-8-sig")
 resid_m.rename(columns=NAMES).corr().round(3).to_csv(OUT / "03-残差相关-月度.csv", encoding="utf-8-sig")
 ex_m_all.rename(columns=NAMES).corr().round(3).to_csv(OUT / "03b-超额收益相关-月度.csv", encoding="utf-8-sig")
 
-# 04 SML（月度，选做）：平均超额收益对 beta
+# 04 SML（月度）：平均超额收益对 beta
 avg = ex_m_all.mean()
 sml_df = pd.DataFrame({"beta": tab_m["beta"], "avg_excess": avg.reindex(tab_m.index)})
 Xs = sm.add_constant(sml_df["beta"].values)
