@@ -1,0 +1,10 @@
+﻿,值
+alpha,0.008703
+t_alpha,1.856084
+beta,0.895961
+se_beta,0.089191
+R2,0.635013
+beta_mean_of_stocks,0.895961
+alpha_mean_of_stocks,0.008703
+nonsys_var,0.001295
+nonsys_var_if_uncorrelated,0.001346
