@@ -26,6 +26,7 @@ format:
       - right=25mm
     toc: true
     toc-title: "目录"
+    toc-depth: 1
     number-sections: true
     colorlinks: false
     fig-align: center
@@ -38,6 +39,8 @@ format:
           \usepackage{float}
           \usepackage{placeins}
           \usepackage{needspace}
+          \usepackage{etoolbox}
+          \pretocmd{\subsection}{\Needspace{16\baselineskip}}{}{}
           \usepackage{fancyhdr}
           \captionsetup{font=small, labelfont=bf, skip=4pt}
           \renewcommand{\figurename}{图}
@@ -54,6 +57,10 @@ format:
           \AtBeginDocument{\hypersetup{hidelinks}}
 ---
 
+```{=latex}
+\newpage
+```
+
 # 摘要 {.unnumbered}
 
 本报告选取中信证券、立讯精密、紫金矿业、五粮液、长江电力五只行业各异的 A 股，以沪深 300 为市场代理、一年期整存整取利率为无风险利率，用 2021 年 10 月至 2026 年 9 月的 CSMAR 数据，分别在月度（60 期）、周度（254 期）和日度（约 1200 期）三种频率下估计证券特征线，并对回归结果做方差分析。主要发现：
@@ -63,6 +70,10 @@ format:
 3. 在 5% 水平上，只有紫金矿业的 $\hat\alpha$ 在周度（$t=2.16$）和日度（$t=2.21$）显著为正，月度 $p=0.059$ 处于边缘；其余四只均不显著。利用方式是做多该股、同时用沪深 300 股指期货对冲其 $\beta$，但在 5 只里挑 1 只显著的证据偏弱。
 4. 样本期内市场平均超额收益为负（-0.18%/月），估计出的 SML 斜率为 -0.63%/月（$t=-0.44$），与 CAPM 的预期（斜率等于市场平均超额收益）没有显著差异；只有 5 个点，检验力很弱。
 5. 拓展分析：稳健标准误与自助法下紫金矿业的 $\hat\alpha$ 结论不变；$\beta$ 在前后半样本间有明显漂移，Blume 调整在这 5 只股票上未改善预测；样本外对冲未带来改善；等权五只组合的非系统方差降至单只的约 1/5；$\hat\beta$ 对市场代理的选择高度敏感，但 SML 的结论稳健。
+
+```{=latex}
+\newpage
+```
 
 # 引言
 
@@ -125,9 +136,17 @@ sys_var = m.params[1] ** 2 * np.var(x.values, ddof=1)   # 系统方差 b^2 var(x
 nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 ```
 
+```{=latex}
+\newpage
+```
+
 # 估计结果
 
 ## 证券特征线（月度）
+
+```{=latex}
+\Needspace{14\baselineskip}
+```
 
 | 股票 | $\hat\alpha$ | $t_\alpha$ | $\hat\beta$ | 标准误 | $t_\beta$ | $R^2$ | $\hat\sigma(e)$ |
 |----------|------|------|------|------|------|------|-------|
@@ -150,6 +169,10 @@ nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 
 ## 不同频率下的稳健性
 
+```{=latex}
+\Needspace{14\baselineskip}
+```
+
 | 股票 | 月度 $\hat\beta$ | 周度 $\hat\beta$ | 日度 $\hat\beta$ | 月度 $t_\alpha$ | 周度 $t_\alpha$ | 日度 $t_\alpha$ |
 |-----|-------|-------|-------|-----|-----|-----|
 | 中信证券 | 1.26（0.14） | 1.28（0.07） | 1.12（0.03） | 1.04 | 1.08 | 0.90 |
@@ -164,6 +187,10 @@ nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 同一只股票在不同频率下的 $\hat\beta$ 最多相差约 0.27（紫金矿业：月度 0.80，日度 1.07），而月度回归的标准误在 0.12 到 0.28 之间，差异大体落在 1 个标准误以内，不能认为频率改变了股票的系统风险。频率越高，观测越多，标准误越小（日度约 0.03–0.06），这就是长江电力日度 $\hat\beta=0.15$ 即显著、月度 0.01 却不显著的原因。另一方面，日度数据受非同步交易和微观结构噪声的影响更大，本文以月度为主要结果。
 
 ## 方差分析
+
+```{=latex}
+\Needspace{14\baselineskip}
+```
 
 | 股票 | 总方差 | 系统方差 $\hat\beta^2\sigma_M^2$ | 非系统方差 $\hat\sigma^2(e)$ | 系统占比 $R^2$ | $F$ | $p$（$F$） |
 |---|---|---|---|---|---|---|
@@ -180,6 +207,10 @@ nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 完整明细见 `结果/02-方差分析-月度.csv`、`结果/03-残差相关-月度.csv`。除长江电力外，其余四只的 $F$ 检验在 1% 水平上均显著，即市场因素对它们的月度收益有显著解释力；但系统方差占比从五粮液的 45% 到紫金矿业的 15% 不等，多数股票的大部分方差仍是可以通过分散化消掉的非系统方差。
 
 月度残差的相关系数矩阵如下，除个别配对外都接近 $0$，与单指数模型的假设一致。若五只股票来自同一行业，这一矩阵通常会出现明显的正相关。
+
+```{=latex}
+\Needspace{14\baselineskip}
+```
 
 | | 中信证券 | 立讯精密 | 紫金矿业 | 五粮液 | 长江电力 |
 |---|---|---|---|---|---|
@@ -207,13 +238,19 @@ nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 2. 在 5 只股票里挑最显著的一只，存在多重检验问题：若 5 只都真实公平定价，在 5% 水平上至少有一只显著的概率约为 $1-0.95^5\approx 23\%$；
 3. 对冲有成本：股指期货的基差、展期、保证金占用，以及 $\hat\beta$ 本身的估计误差（月度与日度估计相差 0.27）。
 
+```{=latex}
 \newpage
+```
 
 # 估计证券市场线
 
 对五只股票，用月度平均超额收益 $\bar R_i$ 对 $\hat\beta_i$ 做截面回归：$\bar R_i=\gamma_0+\gamma_1\hat\beta_i+u_i$。CAPM 要求 $\gamma_0=0$，$\gamma_1$ 等于市场溢价（这里用样本期市场平均超额收益 -0.18%/月代替）。
 
 完整明细见 `结果/04-SML-月度.csv`、`结果/04-SML散点数据-月度.csv`。
+
+```{=latex}
+\Needspace{14\baselineskip}
+```
 
 | 股票 | $\hat\beta$ | 平均月超额收益 |
 |---------|--------|-----------|
@@ -225,6 +262,10 @@ nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 
 : 截面回归的数据点 {#tbl-pts}
 
+```{=latex}
+\Needspace{14\baselineskip}
+```
+
 | 项 | 估计 | 标准误 | $t$ | $p$ |
 |---|---|---|---|---|
 | 截距 $\gamma_0$（月） | 1.27% | 1.46% | 0.87 | 0.447 |
@@ -232,13 +273,13 @@ nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 
 : 估计的 SML（5 个点） {#tbl-sml}
 
-![估计的 SML（月度）](结果/fig-03-SML-月度.png){#fig-sml width=70%}
+![估计的 SML（月度）](结果/fig-03-SML-月度.png){#fig-sml width=62%}
 
 结果：截距 1.27%/月（$t=0.87$）、斜率 -0.63%/月（$t=-0.44$），两者与 CAPM 的预期（$\gamma_0=0$，$\gamma_1=-0.18%$）都没有显著差异。需要留意三点：
 
-1. CAPM 说的是**期望**收益，样本期内实现的市场溢价为负（-0.18%/月）并不否定它。样本里 SML 的理论斜率本来就应该是负的，估计出来的斜率符号与之一致。
-2. 只有 5 个点，$\hat\beta$ 本身带有估计误差（所谓变量含误差问题），检验力很弱，不能据此证明 CAPM 成立。
-3. 即使 CAPM 为真，用指数代理市场组合也无法完全检验它（Roll 批评）；检验不通过不等于模型错误，通过也不等于模型对。
+1. CAPM 说的是**期望**收益，样本期内实现的市场溢价为负（-0.18%/月）并不否定它；样本里 SML 的理论斜率本来就应为负，与估计出的斜率符号一致。
+2. 只有 5 个点，且 $\hat\beta$ 含估计误差，检验力很弱，不能据此证明 CAPM 成立。
+3. 用指数代理市场组合无法完全检验 CAPM（Roll 批评）：检验不通过不等于模型错误，通过也不等于模型对。
 
 # 拓展分析
 
@@ -249,7 +290,7 @@ nonsys = (m.resid ** 2).sum() / (n - 1)                 # 非系统方差
 OLS 的标准误假设残差同方差、无自相关。@tbl-diag 同时给出异方差稳健（HC3）、异方差与自相关稳健（Newey–West，滞后 3 期）标准误，以及对 $(R_{Mt},R_{it})$ 配对重抽样 5000 次的自助法 95% 区间，并列出残差的 Breusch–Pagan 异方差检验和 Jarque–Bera 正态性检验的 $p$ 值。
 
 ```{=latex}
-\Needspace{8\baselineskip}
+\Needspace{14\baselineskip}
 \begingroup\footnotesize
 ```
 
@@ -276,7 +317,7 @@ OLS 的标准误假设残差同方差、无自相关。@tbl-diag 同时给出异
 CAPM 与单指数模型都隐含 $\beta$ 在样本期内不变。把 60 个月分成前后各 30 个月分别估计，并用交互项检验差异（@tbl-stab），再取 36 个月滚动窗口观察 $\beta$ 的路径（@fig-roll）。
 
 ```{=latex}
-\Needspace{8\baselineskip}
+\Needspace{14\baselineskip}
 \begingroup\footnotesize
 ```
 
@@ -306,7 +347,7 @@ CAPM 与单指数模型都隐含 $\beta$ 在样本期内不变。把 60 个月�
 按课件 p18，认定紫金矿业被低估后，买入该股并卖出 $\hat\beta$ 倍的沪深 300，使市场暴露接近零。@tbl-hedge 比较未对冲、样本内 $\hat\beta$ 对冲和样本外对冲（每月只用此前数据估 $\beta$，最少 24 个月）的表现；样本外一栏同时给出同一区间未对冲的结果以便对照。
 
 ```{=latex}
-\Needspace{8\baselineskip}
+\Needspace{14\baselineskip}
 \begingroup\footnotesize
 ```
 
@@ -334,7 +375,7 @@ CAPM 与单指数模型都隐含 $\beta$ 在样本期内不变。把 60 个月�
 课件 p21–23 说明，等权组合的 $\alpha$、$\beta$ 是各只的平均，非系统方差随 $N$ 增加按 $\sigma^2(e)/N$ 下降。@tbl-div 对 $N=1,\dots,5$ 的所有等权子组合分别回归并取平均。
 
 ```{=latex}
-\Needspace{8\baselineskip}
+\Needspace{14\baselineskip}
 \begingroup\footnotesize
 ```
 
@@ -363,7 +404,7 @@ CAPM 与单指数模型都隐含 $\beta$ 在样本期内不变。把 60 个月�
 真正的市场组合不可观测，所谓「市场」只是某个指数。用本次已下载的几个指数分别作代理，重估 $\hat\beta$（括号内为 $R^2$）：
 
 ```{=latex}
-\Needspace{8\baselineskip}
+\Needspace{14\baselineskip}
 \begingroup\footnotesize
 ```
 
@@ -382,7 +423,7 @@ CAPM 与单指数模型都隐含 $\beta$ 在样本期内不变。把 60 个月�
 ```
 
 ```{=latex}
-\Needspace{8\baselineskip}
+\Needspace{14\baselineskip}
 \begingroup\footnotesize
 ```
 
@@ -410,7 +451,7 @@ CAPM 与单指数模型都隐含 $\beta$ 在样本期内不变。把 60 个月�
 课件 p17 给出夏普比率和詹森 $\alpha$。@tbl-pf 再补充特雷诺比率（超额收益除以 $\beta$）与信息比率（$\alpha$ 除以残差标准差，年化）。
 
 ```{=latex}
-\Needspace{8\baselineskip}
+\Needspace{14\baselineskip}
 \begingroup\footnotesize
 ```
 
