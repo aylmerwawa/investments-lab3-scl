@@ -170,6 +170,26 @@ va.round(6).to_csv(OUT / "02-方差分析-月度.csv", encoding="utf-8-sig")
 resid_m.rename(columns=NAMES).corr().round(3).to_csv(OUT / "03-残差相关-月度.csv", encoding="utf-8-sig")
 ex_m_all.rename(columns=NAMES).corr().round(3).to_csv(OUT / "03b-超额收益相关-月度.csv", encoding="utf-8-sig")
 
+# 残差相关热力图（对角线省略）
+rc = resid_m.rename(columns=NAMES).corr()
+fig, ax = plt.subplots(figsize=(5.6, 4.6))
+mask = np.eye(len(rc), dtype=bool)
+data = np.ma.masked_array(rc.values, mask)
+im = ax.imshow(data, cmap="RdBu_r", vmin=-0.5, vmax=0.5)
+ax.set_xticks(range(len(rc))); ax.set_xticklabels(rc.columns, fontsize=10)
+ax.set_yticks(range(len(rc))); ax.set_yticklabels(rc.index, fontsize=10)
+for i in range(len(rc)):
+    for j in range(len(rc)):
+        if i == j:
+            ax.text(j, i, "—", ha="center", va="center", color="gray", fontsize=10)
+        else:
+            ax.text(j, i, f"{rc.values[i, j]:.2f}", ha="center", va="center", fontsize=10)
+ax.set_title("月度回归残差的相关系数", fontsize=12)
+cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+cb.set_label("相关系数（色标范围 −0.5 至 0.5）", fontsize=9)
+fig.tight_layout()
+fig.savefig(OUT / "fig-02b-残差相关热力图-月度.png", dpi=150); plt.close(fig)
+
 # 04 SML（月度）：平均超额收益对 beta
 avg = ex_m_all.mean()
 sml_df = pd.DataFrame({"beta": tab_m["beta"], "avg_excess": avg.reindex(tab_m.index)})
