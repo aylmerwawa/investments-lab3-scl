@@ -164,9 +164,11 @@ rows = []
 for nm in PROXIES.values():
     sub = proxy[proxy["市场代理"] == nm].set_index("代码").loc[ORDER]
     m = sm.OLS(avg_ex.loc[ORDER].values, sm.add_constant(sub["beta"].values)).fit()
-    rows.append({"市场代理": nm, "代理月均超额收益": sub["代理月均超额收益"].iloc[0],
+    prem = sub["代理月均超额收益"].iloc[0]
+    rows.append({"市场代理": nm, "代理月均超额收益": prem,
                  "gamma0": m.params[0], "t_gamma0": m.tvalues[0],
-                 "gamma1": m.params[1], "t_gamma1": m.tvalues[1], "R2": m.rsquared})
+                 "gamma1": m.params[1], "t_gamma1_H0为0": m.tvalues[1],
+                 "t_gamma1_相对预期值": (m.params[1] - prem) / m.bse[1], "R2": m.rsquared})
 sml_proxy = pd.DataFrame(rows)
 sml_proxy.round(4).to_csv(OUT / "10b-SML-不同市场代理-月度.csv", index=False, encoding="utf-8-sig")
 

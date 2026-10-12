@@ -195,9 +195,13 @@ avg = ex_m_all.mean()
 sml_df = pd.DataFrame({"beta": tab_m["beta"], "avg_excess": avg.reindex(tab_m.index)})
 Xs = sm.add_constant(sml_df["beta"].values)
 sml = sm.OLS(sml_df["avg_excess"].values, Xs).fit()
-sml_out = pd.DataFrame({"系数": sml.params, "标准误": sml.bse, "t": sml.tvalues, "p": sml.pvalues},
+sml_out = pd.DataFrame({"系数": sml.params, "标准误": sml.bse, "t(H0:=0)": sml.tvalues, "p(H0:=0)": sml.pvalues},
                        index=["截距(gamma0)", "斜率(gamma1)"])
 sml_out["样本市场平均超额收益"] = [np.nan, mk_m.mean()]
+# CAPM 预期值：截距应为 0，斜率应等于样本期市场平均超额收益；检验的是「估计值是否等于预期值」
+sml_out["CAPM预期值"] = [0.0, mk_m.mean()]
+sml_out["t(相对CAPM预期值)"] = (sml_out["系数"] - sml_out["CAPM预期值"]) / sml_out["标准误"]
+sml_out["p(相对CAPM预期值)"] = 2 * stats.t.sf(sml_out["t(相对CAPM预期值)"].abs(), df=len(sml_df) - 2)
 sml_out.round(6).to_csv(OUT / "04-SML-月度.csv", encoding="utf-8-sig")
 sml_df.assign(简称=[NAMES[c] for c in sml_df.index]).round(6).to_csv(
     OUT / "04-SML散点数据-月度.csv", encoding="utf-8-sig")
