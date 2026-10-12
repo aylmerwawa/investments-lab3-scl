@@ -1,0 +1,21 @@
+.DS_Store
+.ipynb_checkpoints/
+.vscode/
+__pycache__/
+*.pyc
+
+# CSMAR 原始数据受使用授权限制（仅供北京师范大学使用），不进公开仓库
+data/
+
+# 课程发放的要求截图
+作业要求.png
+提交.png
+
+# 本地编译产物（源文件是 报告.qmd）
+报告.pdf
+实验3+*.pdf
+报告.html
+报告.tex
+报告_files/
+/_build/
+/.quarto/
